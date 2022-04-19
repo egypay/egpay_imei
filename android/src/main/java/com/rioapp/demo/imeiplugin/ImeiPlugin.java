@@ -46,7 +46,7 @@ public class ImeiPlugin implements MethodCallHandler, PluginRegistry.RequestPerm
      * add Listener Request permission
      */
     public static void registerWith(Registrar registrar) {
-        final MethodChannel channel = new MethodChannel(registrar.messenger(), "imei_plugin");
+        final MethodChannel channel = new MethodChannel(registrar.messenger(), "egpay_imei");
         ImeiPlugin imeiPlugin = new ImeiPlugin(registrar.activity(), registrar.context().getContentResolver());
         channel.setMethodCallHandler(imeiPlugin);
         registrar.addRequestPermissionsResultListener(imeiPlugin);

@@ -1,8 +1,8 @@
-name: imei_plugin
+name: egpay_imei
 description: get real IMEI for android devices with validate permission on ejecution time and get unique id on ios An alphanumeric string that uniquely identifies a device to the app’s vendor.
 version: 2.0.0
 author: Kevin Caicedo <ing.sys.kevincaicedo@gmail.com>
-homepage: https://github.com/kevincaicedo/imei_plugin
+homepage: https://github.com/kevincaicedo/egpay_imei
 
 environment:
   sdk: '>=2.12.0 <3.0.0'

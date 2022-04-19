@@ -1,6 +1,6 @@
 # Imei Plugin
 
-[ ![Build version](https://img.shields.io/badge/pub-v1.2.0-green)](https://pub.dev/packages/imei_plugin)
+[ ![Build version](https://img.shields.io/badge/pub-v1.2.0-green)](https://pub.dev/packages/egpay_imei)
 
 Get unique id device on ios and android
 
@@ -10,7 +10,7 @@ Get IMEI (International Mobile Device Identity) for Android devices less than an
 
 **Use**
 ```dart
-import 'package:imei_plugin/imei_plugin.dart';
+import 'package:egpay_imei/egpay_imei.dart';
 
 String imei = await ImeiPlugin.getImei();
 List<String> multiImei = await ImeiPlugin.getImeiMulti(); //for double-triple SIM phones

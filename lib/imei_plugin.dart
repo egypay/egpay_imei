@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/services.dart';
 
 class ImeiPlugin {
-  static const MethodChannel _channel = const MethodChannel('imei_plugin');
+  static const MethodChannel _channel = const MethodChannel('egpay_imei');
 
   // get imei android device @return String
   static Future<String?> getImei({

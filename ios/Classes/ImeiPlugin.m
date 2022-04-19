@@ -3,7 +3,7 @@
 @implementation ImeiPlugin
 + (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar>*)registrar {
   FlutterMethodChannel* channel = [FlutterMethodChannel
-      methodChannelWithName:@"imei_plugin"
+      methodChannelWithName:@"egpay_imei"
             binaryMessenger:[registrar messenger]];
   ImeiPlugin* instance = [[ImeiPlugin alloc] init];
   [registrar addMethodCallDelegate:instance channel:channel];

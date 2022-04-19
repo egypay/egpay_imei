@@ -2,7 +2,7 @@
 # To learn more about a Podspec see http://guides.cocoapods.org/syntax/podspec.html
 #
 Pod::Spec.new do |s|
-  s.name             = 'imei_plugin'
+  s.name             = 'egpay_imei'
   s.version          = '0.0.1'
   s.summary          = 'get info imei device'
   s.description      = <<-DESC
