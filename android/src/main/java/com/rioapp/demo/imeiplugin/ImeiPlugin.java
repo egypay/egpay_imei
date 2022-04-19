@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.telephony.TelephonyManager;
+import android.provider.Settings;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
@@ -58,21 +59,32 @@ public class ImeiPlugin implements MethodCallHandler, PluginRegistry.RequestPerm
 
     private static void getImei(Activity activity, Result result) {
         try {
-
-            if (android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.P){
-                result.success(getUUID(activity));
-            }else if (ContextCompat.checkSelfPermission((activity), Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED){
-                TelephonyManager telephonyManager = (TelephonyManager) activity.getSystemService(Context.TELEPHONY_SERVICE);
-
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-                    result.success( telephonyManager.getImei() );
-                else
-                    result.success( telephonyManager.getDeviceId() );
+            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                String IMEI = Settings.Secure.getString(context.getContentResolver(),
+                        Settings.Secure.ANDROID_ID);
+                return IMEI;
 
             } else {
+                TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+                int permissionCheck = ContextCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE);
 
-                if (ssrpr && ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.READ_PHONE_STATE) )
-                    result.error(ERCODE_PERMISSIONS_DENIED,"Permission Denied", null);
+                if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.READ_PHONE_STATE}, 111);
+                } else
+                    return telephonyManager.getDeviceId();
+
+            }
+
+            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                result.success(Settings.Secure.getString(activity.getContentResolver(),
+                        Settings.Secure.ANDROID_ID));
+            } else if (ContextCompat.checkSelfPermission((activity), Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
+                TelephonyManager telephonyManager = (TelephonyManager) activity.getSystemService(Context.TELEPHONY_SERVICE);
+                result.success(telephonyManager.getDeviceId());
+            } else {
+
+                if (ssrpr && ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.READ_PHONE_STATE))
+                    result.error(ERCODE_PERMISSIONS_DENIED, "Permission Denied", null);
                 else
                     ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.READ_PHONE_STATE}, MY_PERMISSIONS_REQUEST_READ_PHONE_STATE);
 
@@ -86,9 +98,9 @@ public class ImeiPlugin implements MethodCallHandler, PluginRegistry.RequestPerm
     private static void getImeiMulti(Activity activity, Result result) {
         try {
 
-            if (android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.P){
+            if (android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
                 result.success(Arrays.asList(getUUID(activity)));
-            }else if (ContextCompat.checkSelfPermission((activity), Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED){
+            } else if (ContextCompat.checkSelfPermission((activity), Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
                 TelephonyManager telephonyManager = (TelephonyManager) activity.getSystemService(Context.TELEPHONY_SERVICE);
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -103,12 +115,12 @@ public class ImeiPlugin implements MethodCallHandler, PluginRegistry.RequestPerm
                     }
                     result.success(imeis);
                 } else {
-                    result.success( Arrays.asList(telephonyManager.getDeviceId()) );
+                    result.success(Arrays.asList(telephonyManager.getDeviceId()));
                 }
 
             } else {
-                if (ssrpr && ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.READ_PHONE_STATE) )
-                    result.error(ERCODE_PERMISSIONS_DENIED,"Permission Denied", null);
+                if (ssrpr && ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.READ_PHONE_STATE))
+                    result.error(ERCODE_PERMISSIONS_DENIED, "Permission Denied", null);
                 else
                     ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.READ_PHONE_STATE}, MY_PERMISSIONS_REQUEST_READ_PHONE_STATE_IMEI_MULTI);
 
@@ -134,7 +146,7 @@ public class ImeiPlugin implements MethodCallHandler, PluginRegistry.RequestPerm
         return uniqueID;
     }
 
-    private static void getID(Context context, Result result){
+    private static void getID(Context context, Result result) {
         result.success(getUUID(context));
     }
 
@@ -144,7 +156,7 @@ public class ImeiPlugin implements MethodCallHandler, PluginRegistry.RequestPerm
 
         try {
             ssrpr = call.<Boolean>argument("ssrpr");
-        } catch (Exception e){
+        } catch (Exception e) {
             ssrpr = false;
         }
 
